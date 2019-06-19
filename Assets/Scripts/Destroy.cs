@@ -1,21 +1,25 @@
 ﻿using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class Destroy : MonoBehaviour
 {
-    public int destoyDelay;
-    private TextMeshProUGUI _loose;
-
-    private void Start()
-    {
-        _loose = GetComponent<TextMeshProUGUI>();
-    }
+    public int destroyDelay = 2;
 
     private void OnMouseDown()
     {
+        var localScale = gameObject.transform.localScale.x;
+        
+        if (localScale <= 0.75f)
+        {
+            Manager.Score += 5;
+        }
+
+        if (localScale >= 0.75f && localScale <= 1f)
+        {
+            Manager.Score += 100;
+        }
+
         Destroy(gameObject);
-        ScoreCount.Score++;
     }
 
     private void Update()
@@ -25,8 +29,8 @@ public class Destroy : MonoBehaviour
 
     private IEnumerator DestroyObj()
     {
-        yield return new WaitForSeconds(destoyDelay);
+        yield return new WaitForSeconds(destroyDelay);
         Destroy(gameObject);
-        ScoreCount.Score--;
+        Manager.Score-= 15;
     }
 }
