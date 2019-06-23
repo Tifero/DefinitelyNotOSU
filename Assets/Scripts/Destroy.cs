@@ -3,34 +3,38 @@ using UnityEngine;
 
 public class Destroy : MonoBehaviour
 {
-    public int destroyDelay = 2;
-
-    private void OnMouseDown()
-    {
-        var localScale = gameObject.transform.localScale.x;
-        
-        if (localScale <= 0.75f)
-        {
-            Manager.Score += 5;
-        }
-
-        if (localScale >= 0.75f && localScale <= 1f)
-        {
-            Manager.Score += 100;
-        }
-
-        Destroy(gameObject);
-    }
+    public float destroyDelay = 2;
+    public GameObject failSprite;
 
     private void Update()
     {
-        StartCoroutine(DestroyObj());
+        StartCoroutine(DestroyCircle());
     }
 
-    private IEnumerator DestroyObj()
+    private IEnumerator DestroyCircle()
     {
         yield return new WaitForSeconds(destroyDelay);
+        var position = transform.position;
+        Instantiate(failSprite, new Vector3(position.x, position.y, position.z), Quaternion.identity);
+
+        Manager.Score -= 10;
+        Manager.comboCount = 1;
+
         Destroy(gameObject);
-        Manager.Score-= 15;
+    }
+
+    private void OnMouseDown()
+    {
+        if (Manager.CanPlay)
+        {
+            if (Manager.Score < 100)
+            {
+                Manager.Score += 10;
+            }
+
+            Manager.comboCount += 1;
+
+            Destroy(gameObject);
+        }
     }
 }

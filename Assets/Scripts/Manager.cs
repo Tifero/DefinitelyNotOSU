@@ -1,26 +1,29 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
     public GameObject enemy;
+    public static bool CanPlay = true;
     public static int Score;
-    public Text scoreText;
-    private bool canPlay = true;
+    public Slider slider;
 
-    [SerializeField]
-    private float spawnDelay = 3;
+    [SerializeField] private float spawnDelay = 2;
+    public static int comboCount = 1;
+    public Text comboText;
+    private Text _scoreText;
 
     private void Start()
     {
-        scoreText = GetComponentInChildren<Text>();
+        _scoreText = GetComponentInChildren<Text>();
         StartCoroutine("SpawnObject");
     }
 
     private IEnumerator SpawnObject()
     {
-        while (canPlay)
+        while (CanPlay)
         {
             yield return new WaitForSeconds(spawnDelay);
 
@@ -32,15 +35,33 @@ public class Manager : MonoBehaviour
     private void Update()
     {
         ScoreCheck();
+        
+        TimeEffect();
+        ScoreUpdate();
     }
 
     private void ScoreCheck()
     {
-        scoreText.text = Score.ToString();
+        slider.value = Score;
+        comboText.text = comboCount.ToString();
+        
         if (Score <= -1)
         {
-            scoreText.text = "Lose";
-            canPlay = false;
+            CanPlay = false;
+        }
+    }
+
+    private void ScoreUpdate()
+    {
+        //scoreTotal += Score * comboCount;
+        _scoreText.text = (Score * comboCount).ToString();
+    }
+
+    private void TimeEffect()
+    {
+        if (Score == 100)
+        {
+            spawnDelay = 0.5f;
         }
     }
 }
