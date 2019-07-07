@@ -8,16 +8,15 @@ public class Manager : MonoBehaviour
     public GameObject enemy;
     public static bool CanPlay = true;
     public static int Score;
-    public Slider slider;
+    public Slider Slider;
 
     [SerializeField] private float spawnDelay = 2;
     public static int comboCount = 1;
     public Text comboText;
-    private Text _scoreText;
+    public Text scoreText;
 
     private void Start()
     {
-        _scoreText = GetComponentInChildren<Text>();
         StartCoroutine("SpawnObject");
     }
 
@@ -35,14 +34,13 @@ public class Manager : MonoBehaviour
     private void Update()
     {
         ScoreCheck();
-        
         TimeEffect();
         ScoreUpdate();
     }
 
     private void ScoreCheck()
     {
-        slider.value = Score;
+        Slider.value = Score;
         comboText.text = comboCount.ToString();
         
         if (Score <= -1)
@@ -53,8 +51,7 @@ public class Manager : MonoBehaviour
 
     private void ScoreUpdate()
     {
-        //scoreTotal += Score * comboCount;
-        _scoreText.text = (Score * comboCount).ToString();
+        scoreText.text = Score.ToString();
     }
 
     private void TimeEffect()

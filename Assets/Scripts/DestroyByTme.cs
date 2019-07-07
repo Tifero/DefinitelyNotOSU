@@ -6,7 +6,7 @@ public class DestroyByTme : MonoBehaviour
 {
     private const float DestroyDelay = 1f;
 
-    private void Update()
+    private void Start()
     {
         StartCoroutine(DestroyCircle());
     }
