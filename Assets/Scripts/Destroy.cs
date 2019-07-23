@@ -17,7 +17,7 @@ public class Destroy : MonoBehaviour
         var position = transform.position;
         Instantiate(failSprite, new Vector3(position.x, position.y, position.z), Quaternion.identity);
 
-        Manager.comboCount = 1;
+        Manager.ComboCount = 1;
 
         Destroy(gameObject);
     }
@@ -26,9 +26,17 @@ public class Destroy : MonoBehaviour
     {
         if (Manager.CanPlay)
         {
-            Manager.Score += 10 * Manager.comboCount;
-            Manager.comboCount += 1;
+            Manager.Score += 10 * Manager.ComboCount;
+            Manager.ComboCount += 1;
             Destroy(gameObject);
         }
     }
+
+/*    private void CheckOrder()
+    {
+        if (Manager.NumberInt != gameObject.GetComponent<>())
+        {
+            
+        }
+    }*/
 }

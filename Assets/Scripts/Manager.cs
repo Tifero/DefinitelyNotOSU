@@ -8,16 +8,33 @@ public class Manager : MonoBehaviour
     public GameObject enemy;
     public static bool CanPlay = true;
     public static int Score;
-    public Slider Slider;
+    public static int ComboCount = 1;
+    
+    [FormerlySerializedAs("Slider")]
+    public Slider slider;
 
-    [SerializeField] private float spawnDelay = 2;
-    public static int comboCount = 1;
+    [SerializeField] 
+    private float spawnDelay = 2;
+
+    [SerializeField]
+    private float difficultyChangeTime;
+
+    private static int _numberInt;
+    private SpriteRenderer _sprite;
+    private ArrayList enemyList;
+    
+
     public Text comboText;
     public Text scoreText;
+    public Sprite[] spriteCount;
 
     private void Start()
     {
         StartCoroutine("SpawnObject");
+        StartCoroutine("GameSpeed");
+        _sprite = enemy.GetComponent<SpriteRenderer>();
+        _sprite.sprite = spriteCount[0];
+        _numberInt = 0;
     }
 
     private IEnumerator SpawnObject()
@@ -26,23 +43,36 @@ public class Manager : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnDelay);
 
-            Instantiate(enemy, new Vector3(Random.Range(-3.5F, 3.5F), Random.Range(-4.5F, 4.5F), 0),
+            var random = Random.Range(-3.5f, 3.5f);
+            
+            Instantiate(enemy, new Vector3(random, random, 0),
                 Quaternion.identity);
+            
+            if (_numberInt <= 9)
+            {
+                _sprite.sprite = spriteCount[_numberInt];
+                _numberInt++;
+            }
+            else
+            {
+                var randomColor = new Color(Random.Range(0f,1f),Random.Range(0f,1f),Random.Range(0f,1f),1);
+                _sprite.color = randomColor;
+                _numberInt = 0;
+            }
         }
     }
 
     private void Update()
     {
         ScoreCheck();
-        TimeEffect();
         ScoreUpdate();
     }
 
     private void ScoreCheck()
     {
-        Slider.value = Score;
-        comboText.text = comboCount.ToString();
-        
+        slider.value = Score;
+        comboText.text = ComboCount.ToString();
+
         if (Score <= -1)
         {
             CanPlay = false;
@@ -54,11 +84,13 @@ public class Manager : MonoBehaviour
         scoreText.text = Score.ToString();
     }
 
-    private void TimeEffect()
+    private IEnumerator GameSpeed()
     {
-        if (Score == 100)
+        while (CanPlay)
         {
-            spawnDelay = 0.5f;
+            yield return new WaitForSeconds(difficultyChangeTime);
+
+            spawnDelay -= 0.1f;
         }
     }
 }
